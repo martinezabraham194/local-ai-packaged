@@ -1,0 +1,34 @@
+# CLINE - DIRECTORY-STRUCTURE
+
+Purpose:
+- State the recommended modular project organization so the AI assistant can reason about file locations and responsibilities.
+
+Top-level structure:
+- docs/
+  - literature/
+  - architecture.md
+  - technical.md
+  - product_requirement_docs.md
+- tasks/
+  - rfc/
+  - active_context.md
+  - tasks_plan.md
+- src/
+- test/
+- utils/
+- config/
+- data/
+- .clinerules/
+  - rules
+  - plan
+  - implement
+  - debug
+  - memory
+  - directory-structure
+
+Notes:
+- Keep documentation in docs/ (PRD, architecture, technical).
+- Keep active, short-term context in tasks/active_context.md so the assistant uses it as working memory.
+- Store formal proposals in tasks/rfc/.
+- Use .clinerules/ to hold the assistant rules and workflows.
+- Add .gitkeep files in otherwise-empty directories to ensure they are preserved in VCS if needed.

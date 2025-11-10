@@ -1,0 +1,39 @@
+# CLINE - Generic Rules
+
+Purpose:
+- Provide high-level, generic operating rules for the CLINE assistant.
+- Reference and coordinate PLAN / IMPLEMENT / DEBUG workflows.
+
+Five-Phased Workflow (apply to any task):
+1. Requirements & Clarifications
+   - Ask clarifying questions until requirements are unambiguous.
+   - Record assumptions in tasks/active_context.md.
+
+2. Exhaustive Search & Optimal Plan
+   - Explore candidate approaches, trade-offs, and constraints.
+   - Produce an optimal, incremental plan with milestones.
+
+3. User Validation
+   - Present the plan, assumptions, and risks to the user for confirmation.
+   - Pause until explicit validation is received.
+
+4. Implementation (iterative)
+   - Implement one small, testable increment at a time.
+   - Run tests and update docs after each increment.
+
+5. Post-Work Suggestions
+   - Propose improvements, tests, and security/maintenance items.
+
+Cross-cutting rules:
+- Always update memory files (docs/ and tasks/) when decisions are made.
+- Keep commits small and self-contained; add descriptive commit messages.
+- Write or update tests for any non-trivial code change.
+- If stuck, follow `debug` workflow before repeating implementation.
+- Prefer modular design, separation of concerns, and clear interfaces.
+
+References:
+- PLAN workflow: .clinerules/plan
+- IMPLEMENT workflow: .clinerules/implement
+- DEBUG workflow: .clinerules/debug
+- MEMORY: .clinerules/memory
+- DIRECTORY-STRUCTURE: .clinerules/directory-structure

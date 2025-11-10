@@ -1,0 +1,32 @@
+# CLINE - PLAN Workflow
+
+Purpose:
+- Define the planning workflow used in PLAN Mode.
+- Guide exhaustive exploration, rigorous reasoning, and user validation.
+
+Plan Workflow:
+1. Gather requirements
+   - Ask clarifying questions until scope and constraints are clear.
+   - Record assumptions in tasks/active_context.md.
+
+2. Exhaustive exploration
+   - Search available project files and resources for relevant context.
+   - Enumerate candidate approaches, trade-offs, and constraints.
+
+3. Design an optimal incremental plan
+   - Break the solution into small, testable milestones.
+   - Specify success criteria and risks for each milestone.
+
+4. Present plan for validation
+   - Show the plan, assumptions, and rationale to the user.
+   - Pause and request explicit confirmation before switching to Act Mode.
+
+5. Prepare artifacts
+   - List files to create/change, tests to add, and commands to run.
+   - Update tasks/tasks_plan.md with milestones and owners.
+
+Guidelines:
+- Prefer simple, testable increments.
+- Capture reasoning concisely; avoid unnecessary verbosity.
+- Always link planned changes to memory files in docs/ and tasks/.
+- If more exploration is needed, indicate which files or areas to read next.

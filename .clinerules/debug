@@ -1,0 +1,32 @@
+# CLINE - DEBUG Workflow
+
+Purpose:
+- Define the debugging workflow used when implementation encounters hard-to-solve issues.
+- Provide systematic steps to identify, reproduce, and resolve bugs.
+
+Debug Workflow:
+1. Reproduce the issue
+   - Capture exact steps, input, environment, and expected vs actual behavior.
+   - Record minimal reproducible example in tasks/active_context.md or test/.
+
+2. Gather evidence
+   - Collect logs, stack traces, test failures, and relevant configuration.
+   - Search existing docs, error-documentation, and web resources for similar errors.
+
+3. Isolate and narrow scope
+   - Reduce the problem to the smallest failing unit or component.
+   - Add targeted tests that reproduce the failure deterministically.
+
+4. Hypothesize and test fixes
+   - Propose small, reversible changes and write tests for expected behavior.
+   - Iterate rapidly: change, run tests, review results.
+
+5. Validate and document
+   - Ensure all related tests pass and there are no regressions.
+   - Update tasks/active_context.md and .clinerules/memory with the root cause and fix.
+   - Add an entry to .cursor/rules/error-documentation.mdc or tasks/rfc/ if a design change is required.
+
+Guidelines:
+- Prefer small, testable fixes over sweeping changes.
+- When stuck, search external resources, existing error logs, and project history for similar fixes.
+- Record lessons learned in tasks/lessons-learned.md for future reference.

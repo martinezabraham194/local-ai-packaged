@@ -1,0 +1,32 @@
+# CLINE - IMPLEMENT Workflow
+
+Purpose:
+- Define the implementation workflow used in ACT Mode.
+- Promote modular design, incremental development, and testing.
+
+Implementation Workflow:
+1. Small increments
+   - Break features into minimal, testable units.
+   - Implement one unit at a time.
+
+2. Separation of concerns
+   - Keep modules focused and with clear interfaces.
+   - Prefer composition over monolithic design.
+
+3. Testing and validation
+   - Add or update tests for each implemented unit.
+   - Run test suite and ensure all tests pass before proceeding.
+
+4. Code review and commits
+   - Keep commits small and descriptive.
+   - Run linters and formatters; include results in the commit message when relevant.
+
+5. Documentation updates
+   - Update docs/ and tasks/ memory files to reflect design and decisions.
+   - Record API changes in docs/technical.md and tasks/active_context.md.
+
+Guidelines:
+- Prefer simple, well-documented implementations.
+- Add feature flags for risky changes.
+- When dependencies change, update configuration files in config/.
+- If a change impacts other modules, update integration tests.

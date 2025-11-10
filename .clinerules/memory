@@ -1,0 +1,26 @@
+# CLINE - MEMORY (Project Documentation Guidelines)
+
+Purpose:
+- Establish the persistent documentation system used as the project's memory bank.
+- Define what to record, where, and how the AI should update documentation automatically.
+
+Memory File Responsibilities:
+- product_requirement_docs.md (docs/product_requirement_docs.md): Project purpose, goals, scope, target users, and acceptance criteria.
+- architecture.md (docs/architecture.md): High-level architecture diagrams, component interactions, and design rationale.
+- technical.md (docs/technical.md): Implementation details, environment setup, dependencies, coding conventions, and design patterns.
+- tasks_plan.md (tasks/tasks_plan.md): Backlog, milestones, owners, and progress.
+- active_context.md (tasks/active_context.md): Current focus, assumptions, recent decisions, and next steps.
+- error-documentation.mdc / lessons-learned.mdc: Known issues, fixes, and postmortems (optional storage under tasks/ or .cursor/rules/).
+
+Automatic Documentation Rules:
+- After any planning, implementation, or debugging milestone, update the appropriate memory files with:
+  - Summary of change
+  - Rationale and trade-offs
+  - Tests added/updated
+  - Links to commits or RFCs
+- Keep memory entries concise, timestamped, and linked to related RFCs or code locations.
+- When in doubt, append to tasks/active_context.md and let the user review before promoting to core docs/.
+
+Access & Format:
+- Prefer Markdown for portability (.md). Use .mdc/.tex where project requires richer structure.
+- Store diagrams as files in docs/assets/ if needed and reference from architecture.md.
