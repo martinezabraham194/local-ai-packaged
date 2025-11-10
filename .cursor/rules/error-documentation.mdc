@@ -1,0 +1,20 @@
+# Error Documentation
+
+Purpose:
+- Record reproducible errors, root causes, and tested fixes so the AI and humans can quickly reference known issues.
+
+Template entry:
+- Title:
+- Date:
+- Environment:
+- Steps to reproduce:
+- Observed behavior:
+- Root cause:
+- Fix applied:
+- Tests added/updated:
+- Related commits / RFCs:
+- Notes:
+
+Guidelines:
+- Keep entries concise and actionable.
+- Link to commits and tasks/rfc entries when relevant.

@@ -1,0 +1,17 @@
+# Lessons Learned
+
+Purpose:
+- Capture short, actionable lessons after significant milestones or incidents.
+
+Template entry:
+- Date:
+- Context (feature/bug/experiment):
+- What went well:
+- What went wrong:
+- Actionable improvements:
+- Owner / follow-up tasks:
+
+Guidelines:
+- Add one entry per milestone or incident.
+- Keep entries short and timestamped.
+- Link entries to commits, RFCs, or task IDs where relevant.
