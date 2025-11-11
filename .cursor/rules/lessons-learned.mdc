@@ -15,3 +15,10 @@ Guidelines:
 - Add one entry per milestone or incident.
 - Keep entries short and timestamped.
 - Link entries to commits, RFCs, or task IDs where relevant.
+
+- Date: 2025-11-11
+  - Context: Caddy HTTP→HTTPS redirect when using Cloudflare Tunnel for Open WebUI
+  - What went well: Identified Caddy's automatic HTTPS redirect as the cause; updated Caddyfile to serve the Open WebUI site as HTTP-only (http://{$WEBUI_HOSTNAME}) and restarted the caddy container. Verified successful response (HTTP/1.1 200) via curl through host:81 with Host: openwebui.marzhome.com.
+  - What went wrong: Default Caddy auto-HTTPS caused a 308 Permanent Redirect when TLS was terminated externally by Cloudflare Tunnel.
+  - Actionable improvements: Document Cloudflare Tunnel origin setup in docs/technical.md; prefer per-host http:// site blocks in Caddy for origins behind external TLS; add a short runbook for tunnel + origin verification steps.
+  - Owner / follow-up tasks: abmartinez — commit and push these documentation changes; add a test or checklist for future tunnel setups.

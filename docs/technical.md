@@ -34,3 +34,9 @@ Security:
 Operational notes:
 - Update docs/technical.md with any changes to service topology or environment variables.
 - Record compatibility notes (OS, GPU) and known caveats.
+- Cloudflare Tunnel / Caddy origin note: When terminating TLS via Cloudflare Tunnel (cloudflared) and forwarding plain HTTP to the origin, configure Caddy to avoid automatic HTTPS redirects by using an explicit http:// site block for the origin host. Example:
+  http://{$WEBUI_HOSTNAME} {
+      reverse_proxy open-webui:8080
+  }
+  Cloudflared may run on the host or inside a container; running it as a container is optional. Scope http:// site blocks only to hosts behind an external TLS terminator to avoid disabling HTTPS for other sites.
+- Operational security: prefer restricting exposed ports (use private profile) and continue to use Caddy-managed TLS in public/production profiles.

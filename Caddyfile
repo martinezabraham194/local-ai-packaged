@@ -11,7 +11,7 @@
 }
 
 # Open WebUI
-{$WEBUI_HOSTNAME} {
+http://{$WEBUI_HOSTNAME} {
     reverse_proxy open-webui:8080
 }
 
