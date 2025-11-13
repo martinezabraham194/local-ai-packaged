@@ -5,7 +5,7 @@ services:
 
   open-webui:
     ports:
-      - 127.0.0.1:8080:8080
+      - 127.0.0.1:81:8080
 
   n8n:
     ports:
@@ -52,15 +52,3 @@ services:
   searxng:
     ports:
       - 127.0.0.1:8081:8080
-
-  ollama-cpu:
-    ports:
-      - 127.0.0.1:11434:11434
-
-  ollama-gpu:
-    ports:
-      - 127.0.0.1:11434:11434
-      
-  ollama-gpu-amd:
-    ports:
-      - 127.0.0.1:11434:11434

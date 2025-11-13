@@ -3,7 +3,6 @@ include:
 
 volumes:
   n8n_storage:
-  ollama_storage:
   qdrant_storage:
   open-webui:
   flowise:
@@ -19,7 +18,7 @@ x-n8n: &service-n8n
   image: n8nio/n8n:latest
   environment:
     - DB_TYPE=postgresdb
-    - DB_POSTGRESDB_HOST=db
+    - DB_POSTGRESDB_HOST=postgres
     - DB_POSTGRESDB_USER=postgres
     - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
     - DB_POSTGRESDB_DATABASE=postgres
@@ -29,35 +28,13 @@ x-n8n: &service-n8n
     - N8N_USER_MANAGEMENT_JWT_SECRET
     - WEBHOOK_URL=${N8N_HOSTNAME:+https://}${N8N_HOSTNAME:-http://localhost:5678}
 
-x-ollama: &service-ollama
-  image: ollama/ollama:latest
-  container_name: ollama
-  restart: unless-stopped
-  expose:
-    - 11434/tcp
-  environment:
-    - OLLAMA_CONTEXT_LENGTH=8192
-    - OLLAMA_FLASH_ATTENTION=1
-    - OLLAMA_KV_CACHE_TYPE=q8_0
-    - OLLAMA_MAX_LOADED_MODELS=2
-  volumes:
-    - ollama_storage:/root/.ollama
-
-x-init-ollama: &init-ollama
-  image: ollama/ollama:latest
-  container_name: ollama-pull-llama
-  volumes:
-    - ollama_storage:/root/.ollama
-  entrypoint: /bin/sh
-  command:
-    - "-c"
-    - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull qwen2.5:7b-instruct-q4_K_M; OLLAMA_HOST=ollama:11434 ollama pull nomic-embed-text"
-
 services:
   flowise:
     image: flowiseai/flowise
     restart: unless-stopped
     container_name: flowise
+    ports:
+      - 3001:3001
     expose:
       - 3001/tcp
     environment:
@@ -74,6 +51,8 @@ services:
     image: ghcr.io/open-webui/open-webui:main
     restart: unless-stopped
     container_name: open-webui
+    ports:
+      - 8082:8080
     expose:
       - 8080/tcp
     extra_hosts:
@@ -95,6 +74,8 @@ services:
     <<: *service-n8n
     container_name: n8n
     restart: unless-stopped
+    ports:
+      - 5678:5678
     expose:
       - 5678/tcp
     volumes:
@@ -122,6 +103,9 @@ services:
         - ./neo4j/config:/config
         - ./neo4j/data:/data
         - ./neo4j/plugins:/plugins
+    ports:
+      - 7473:7473
+      - 7474:7474
     expose:
       - 7473/tcp
       - 7474/tcp
@@ -135,8 +119,12 @@ services:
     image: docker.io/library/caddy:2-alpine
     restart: unless-stopped
     ports:
+      - 81:80/tcp
       - 80:80/tcp
       - 443:443/tcp
+    extra_hosts:
+      - "open-webui:172.20.0.13"
+      - "n8n:172.20.0.10"
     expose:
       - 2019/tcp
       - 443/tcp
@@ -148,14 +136,14 @@ services:
       - caddy-data:/data:rw
       - caddy-config:/config:rw
     environment:
-      - N8N_HOSTNAME=${N8N_HOSTNAME:-":8001"}
-      - WEBUI_HOSTNAME=${WEBUI_HOSTNAME:-":8002"}
-      - FLOWISE_HOSTNAME=${FLOWISE_HOSTNAME:-":8003"}
-      - OLLAMA_HOSTNAME=${OLLAMA_HOSTNAME:-":8004"}
-      - SUPABASE_HOSTNAME=${SUPABASE_HOSTNAME:-":8005"}
-      - SEARXNG_HOSTNAME=${SEARXNG_HOSTNAME:-":8006"}
-      - LANGFUSE_HOSTNAME=${LANGFUSE_HOSTNAME:-":8007"}
-      - NEO4J_HOSTNAME=${NEO4J_HOSTNAME:-":8008"}
+      - N8N_HOSTNAME=${N8N_HOSTNAME:-:8001}
+      - WEBUI_HOSTNAME=${WEBUI_HOSTNAME:-:8002}
+      - FLOWISE_HOSTNAME=${FLOWISE_HOSTNAME:-:8003}
+      - OLLAMA_HOSTNAME=${OLLAMA_HOSTNAME:-:8004}
+      - SUPABASE_HOSTNAME=${SUPABASE_HOSTNAME:-:8005}
+      - SEARXNG_HOSTNAME=${SEARXNG_HOSTNAME:-:8006}
+      - LANGFUSE_HOSTNAME=${LANGFUSE_HOSTNAME:-:8007}
+      - NEO4J_HOSTNAME=${NEO4J_HOSTNAME:-:8008}
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL:-internal}
     cap_drop:
       - ALL
@@ -229,6 +217,8 @@ services:
     image: langfuse/langfuse:3
     restart: always
     depends_on: *langfuse-depends-on
+    ports:
+      - 3000:3000
     expose:
       - 3000/tcp
     environment:
@@ -273,6 +263,9 @@ services:
     entrypoint: sh
     # create the 'langfuse' bucket before starting the service
     command: -c 'mkdir -p /data/langfuse && minio server --address ":9000" --console-address ":9001" /data'
+    ports:
+      - 9000:9000
+      - 9001:9001
     expose:
       - 9000/tcp
       - 9001/tcp
@@ -335,6 +328,8 @@ services:
     container_name: searxng
     image: docker.io/searxng/searxng:latest
     restart: unless-stopped
+    ports:
+      - 8081:8080
     expose:
       - 8080/tcp
     volumes:
@@ -354,45 +349,3 @@ services:
       options:
         max-size: "1m"
         max-file: "1"
-
-  ollama-cpu:
-    profiles: ["cpu"]
-    <<: *service-ollama
-
-  ollama-gpu:
-    profiles: ["gpu-nvidia"]
-    <<: *service-ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-
-  ollama-gpu-amd:
-    profiles: ["gpu-amd"]
-    <<: *service-ollama
-    image: ollama/ollama:rocm
-    devices:
-      - "/dev/kfd"
-      - "/dev/dri"
-
-  ollama-pull-llama-cpu:
-    profiles: ["cpu"]
-    <<: *init-ollama
-    depends_on:
-      - ollama-cpu
-
-  ollama-pull-llama-gpu:
-    profiles: ["gpu-nvidia"]
-    <<: *init-ollama
-    depends_on:
-      - ollama-gpu
-
-  ollama-pull-llama-gpu-amd:
-    profiles: [gpu-amd]
-    <<: *init-ollama
-    image: ollama/ollama:rocm
-    depends_on:
-     - ollama-gpu-amd

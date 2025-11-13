@@ -183,6 +183,9 @@ Additionally, after you see "Editor is now accessible via: http://localhost:5678
 2. Click on "Local Ollama service"
 3. Change the base URL to "http://host.docker.internal:11434/"
 
+> [!NOTE]
+> Ollama is now running externally from Docker, so the Ollama services have been removed from this Docker Compose configuration.
+
 ### For everyone else
 
 ```bash

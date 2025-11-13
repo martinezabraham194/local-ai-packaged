@@ -4,9 +4,7 @@
 }
 
 # N8N
-{$N8N_HOSTNAME} {
-    # For domains, Caddy will automatically use Let's Encrypt
-    # For localhost/port addresses, HTTPS won't be enabled
+http://{$N8N_HOSTNAME} {
     reverse_proxy n8n:5678
 }
 
