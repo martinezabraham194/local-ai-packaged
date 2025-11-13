@@ -122,9 +122,7 @@ services:
       - 81:80/tcp
       - 80:80/tcp
       - 443:443/tcp
-    extra_hosts:
-      - "open-webui:172.20.0.13"
-      - "n8n:172.20.0.10"
+    # DO NOT hardcode container IPs here; Docker DNS should be used.
     expose:
       - 2019/tcp
       - 443/tcp

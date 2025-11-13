@@ -1,31 +1,28 @@
-# Active Development Context
+Investigation: Unable to access openwebui.marzhome.com and n8n.marzhome.com via Cloudflare Tunnel.
 
-Project: local-ai-packaged — Cline AI Agent Integration
+Summary:
+- Symptoms: 502 Bad Gateway in Caddy logs for openwebui and n8n when accessed via cloud tunnel domains.
+- Root cause: docker-compose.yml had hardcoded extra_hosts entries in the caddy service pointing to stale container IPs. This overrode Docker DNS and caused Caddy to try connecting to incorrect IPs.
+- Fix applied:
+  - Removed stale extra_hosts entries from docker-compose.yml.
+  - Recreated the caddy container to apply changes.
+  - Added scripts/verify_caddy_service_resolution.sh to probe Caddy->service connectivity.
+- Verification:
+  - From inside the caddy container, wget to open-webui:8080 and n8n:5678 succeeded.
+  - curl with Host headers to localhost:81 for openwebui.marzhome.com and n8n.marzhome.com returned HTTP 200.
+- Next steps:
+  - Monitor caddy logs for errors for 5-10 minutes.
+  - If anything regresses, revert the docker-compose.yml changes and investigate service-specific health.
 
-Current focus:
-- Add CLINE rules directory and memory templates to the repository.
-- Scaffold docs/ and tasks/ memory files so the AI can initialize project context.
-
-Recent decisions:
-- Use standard rules template adapted from Bhartendu-Kumar/rules_template.
-- Create minimal placeholder files and .gitkeep markers to preserve directories in git.
-
-Next steps:
-- Populate tasks/tasks_plan.md with backlog and milestones.
-- Create tasks/rfc/ for RFC documents.
-- Create supporting directories (src, test, utils, config, data) and add .gitkeep files.
-- Run the initialization prompt in Cline to let the AI populate memory files.
-
-Timestamp: 2025-11-10 18:07:40 (local)
-
-Recent updates:
-- 2025-11-11 00:58:51 (local) - Disabled automatic HTTPS for Open WebUI in Caddyfile; changed site block to HTTP-only:
-  http://{$WEBUI_HOSTNAME} {
-      reverse_proxy open-webui:8080
-  }
-  Restarted the caddy container and verified HTTP/1.1 200 from http://127.0.0.1:81/ with Host: openwebui.marzhome.com. Caddy now forwards plain HTTP (suitable for Cloudflare Tunnel which terminates TLS).
-
-Next steps:
-- Append concise entry to .cursor/rules/lessons-learned.mdc documenting the incident and fix.
-- Update docs/technical.md operational notes to reference Cloudflare Tunnel usage and Caddy HTTP-only site configuration.
-- Commit changes and push to remote repository.
+Commands used:
+- netstat -plnt | grep LISTEN
+- docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+- docker network inspect local-ai-packaged_default --format '{{range .Containers}}{{.Name}}: {{.IPv4Address}}{{"\n"}}{{end}}'
+- docker exec caddy wget -O- --spider http://172.20.0.10:8080
+- docker exec caddy wget -O- --spider http://172.20.0.15:5678
+- docker logs caddy --tail 50
+- docker compose -f docker-compose.yml up -d --no-deps --force-recreate caddy
+- ./scripts/verify_caddy_service_resolution.sh open-webui 8080
+- ./scripts/verify_caddy_service_resolution.sh n8n 5678
+- curl -v -H "Host: openwebui.marzhome.com" http://localhost:81
+- curl -v -H "Host: n8n.marzhome.com" http://localhost:81
